@@ -2,15 +2,13 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Wi-Fi jammer installer</title>
+    <title>Wi‑Fi Jammer Flasher</title>
     <meta
       name="description"
       content="Easily allow users to install Ble jammer."
     />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="dark light" />
-    
-    
     <style>
       body {
         font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
@@ -35,6 +33,120 @@
       }
       .invisible {
         visibility: hidden;
+      }
+      .hidden {
+        display: none;
+      }
+      esp-web-install-button[install-unsupported] {
+        visibility: inherit;
+      }
+      .content pre {
+        max-width: 100%;
+        overflow-y: scroll;
+      }
+      .footer {
+        margin-top: 24px;
+        border-top: 1px solid #ccc;
+        padding-top: 24px;
+        text-align: center;
+      }
+      .footer .initiative {
+        font-style: italic;
+        margin-top: 16px;
+      }
+      table {
+        border-spacing: 0;
+      }
+      td {
+        padding: 8px;
+        border-bottom: 1px solid #ccc;
+      }
+      .radios li {
+        list-style: none;
+        line-height: 2em;
+      }
+      @media (prefers-color-scheme: dark) {
+        body {
+          background-color: #333;
+          color: #fff;
+        }
+        a {
+          color: #58a6ff;
+        }
+      }
+    </style>
+    <script type="module" src="https://unpkg.com/esp-web-tools@8.0.1/dist/web/install-button.js?module"></script>
+  </head>
+  <body>
+    <div class="content">
+      <h1>Wi‑Fi Jammer Flasher</h1>
+
+      <p>Choose your hardware</p>
+
+      <fieldset>
+        <legend>Hardware type</legend>
+        <ul class="radios" role="radiogroup" aria-label="Hardware type">
+          <li>
+            <label><input type="radio" name="type" value="Ble1" /> Single Nrf24l01 VSPI (SCK = 18, MISO = 19, MOSI = 23, CS = 21, CE = 22)</label>
+          </li>
+          <li>
+            <label><input type="radio" name="type" value="Ble2" /> Dual Nrf24l01 (HSPI + VSPI)</label>
+          </li>
+          <li>
+            <label><input type="radio" name="type" value="Ble3" /> Single Nrf24l01 HSPI (SCK = 14, MISO = 12, MOSI = 13, CS = 15, CE = 16)</label>
+          </li>
+        </ul>
+      </fieldset>
+
+      <p class="button-row" style="text-align:center">
+        <esp-web-install-button class="invisible" aria-hidden="true"></esp-web-install-button>
+      </p>
+
+      <div>It's just for fun — don't be serious</div>
+
+      <div class="footer">
+        For Contact...<br>
+        ✨ <a href="https://www.linkedin.com/in/sathish-r-0853942a6?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app">LinkedIn</a>
+        <br>
+        <a href="https://www.instagram.com/mr.oreo_x?igsh=NXBoejNmb2s4ZXR3">Instagram</a>
+      </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const button = document.querySelector('esp-web-install-button');
+        const radios = Array.from(document.querySelectorAll('input[name="type"]'));
+
+        async function setManifestFor(value) {
+          // adjust this path if your manifest files are in a subfolder (e.g. `web/manifest_${value}.json`)
+          const manifestPath = `manifest_${value}.json`;
+
+          // HEAD-check the manifest to provide feedback if it's missing (optional)
+          try {
+            const resp = await fetch(manifestPath, { method: 'HEAD' });
+            if (!resp.ok) throw new Error('Not found');
+            button.manifest = manifestPath;
+            button.classList.remove('invisible');
+            button.removeAttribute('aria-hidden');
+          } catch (err) {
+            // hide the button and notify the user
+            button.classList.add('invisible');
+            button.setAttribute('aria-hidden', 'true');
+            // Friendly UI fallback: inform the user that the selected manifest is missing
+            // You can replace alert() with an inline message if preferred.
+            alert(`Installer manifest not found: ${manifestPath}\nPlease check that the file exists in the server.`);
+          }
+        }
+
+        radios.forEach(radio => {
+          radio.addEventListener('change', (e) => setManifestFor(e.target.value));
+        });
+
+        // initialize if a radio is pre-selected
+        const checked = radios.find(r => r.checked);
+        if (checked) setManifestFor(checked.value);
+      });
+    </script>
+  </body>
+</html>        visibility: hidden;
       }
       .hidden {
         display: none;
